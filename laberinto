@@ -1,1 +1,108 @@
 #include <stdio.h>
+#include <stlib.h>
+#include <assert.h>
+
+#define ROWS 9
+#define COLS 9
+
+enum CELDAS {
+	WALL = 0,
+	FREE,
+	START,
+	EXIT,
+	VISITED,
+	ROMEVED,
+	PERSON,
+	DEAD,
+	ANIMAL,
+	THING
+};
+
+typedef struct Place_T{
+	int rows;
+	int colms;
+	int map[ROWS][COLS];
+};
+
+typedef struct Place_T Place;
+
+Place* Place_Ctor(int rows, int colms, int board[][COLS]) 
+{
+	Place* new = (Place*)malloc(sizeof(Place));
+	assert(new);
+
+	new->rows = rows;
+	new->colms = colms;
+	for (size_t i = 0; i < rows; i++) {
+		for (size_t j = 0; j < colms; j++) {
+			new->map[i][j] = board[i][j];
+		}
+	}
+	return new;
+}
+
+void Place_Dtor(Place* this) 
+{
+	assert( this );
+	free(this);
+	this == NULL;
+}
+
+void Create_Place(Place* this) 
+{
+	for (size_t i = 0; i < this->rows; i++) {
+		for (size_j = 0; j < this colms; j++) {
+			int celd = this->map[i][j];
+			swtich(celd) {
+
+				case WALL: printf("#"); break;
+				case FREE: printf("."); break;
+				case START: printf("s"); break;
+				case EXIT: printf("e"); break;
+				case VISITED: printf("v"); break;
+				case REMOVED: printf("r"); break;
+				case PERSON: printf("p"); break;
+				case DEAD: printf("d"); break;
+				case ANIMAL: printf("a"); break;
+				case THING: printf("t"); break;
+					default break;
+			}
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+void Place_SetCeld(Place* this, int x, int y,  int type)
+{
+	this->map[x][y] = type;
+}
+
+int Place_GetCeld(Place* this, int x, int y) 
+{
+	return this->map[x][y];
+}
+
+int main()
+{
+	WALL = 0,
+		FREE,
+		START,
+		EXIT,
+		VISITED,
+		ROMEVED,
+		PERSON,
+		DEAD,
+		ANIMAL,
+		THING
+		int tab[ROWS][COLS] = {
+			{2,0,9,1,1,1,0,0,9},
+			{1,0,1,0,0,1,7,1,1},
+			{1,0,0,0,0,1,0,0,1},
+			{1,0,1,1,1,8,0,1,1},
+			{1,0,6,0,0,0,0,1,0},
+			{1,0,1,0,1,1,1,1,1},
+			{1,7,1,0,1,0,0,0,0},
+			{0,0,0,0,9,1,1,6,3}
+	};
+}
