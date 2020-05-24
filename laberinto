@@ -109,7 +109,7 @@ int main()
 	Place* Tab = Place_Ctor(ROW, COLS, tab);
 	Create_Place(Place Tab);
 	Place_SetCeld(Tab, 0, 0, START);
-	Place_SetCeld(Tab, 8, 9, EXIT);
+	Place_SetCeld(Tab, 7, 8, EXIT);
 	Create_Place(Place Tab);
 
 	Place_Dtor(Tab);
