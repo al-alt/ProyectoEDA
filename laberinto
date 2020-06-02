@@ -83,6 +83,65 @@ int Place_GetCeld(Place* this, int x, int y)
 	return this->map[x][y];
 }
 
+bool BT(Place* tab, Stack* solucion, int x, int y, int* acum, int* s_idx)
+{
+	bool free = false;
+	// termina cuando encuentre una solución.
+
+	if (free == true) { return true };
+	// ya no revisa los candidatos restantes una vez que se obtuvo una
+	// solución
+
+	if (Place_GetCeld(tab, x, y) != 0) {
+
+		free = BT(tab, solucion, x + 1, y, acum, s_idx);
+		++*s_idx ;
+
+		if (not free) {
+			--* s_idx;
+		}
+		else {
+			free = BT(tab, solucion, x, y + 1, acum, s_idx);
+		}
+	}	
+	else if (Place_GetCeld(tab, x, y) != 0 && Place_GetCeld(tab, x, y) != 1) {
+		int celd = Place_GetCeld(tab, x, y);
+		    for (int s = 0; s < 10; s++) {
+				switch (celd) {
+
+				case START:
+					Place_SetCeld(tab, x, y, START);  break;
+
+				case EXIT:
+					free = true;
+					return free; break;
+
+				case VISITED:
+					 Place_SetCeld(tab, x, y, VISITED); break;
+
+				case DELETE:
+					Place_SetCeld(tab, x, y, DELETE); break;
+				case PERSON:
+					solucion->stack[s] = Place_GetCeld(tab, x, y); break;
+
+				case DEAD:
+				    solucion->stack[s] = Place_GetCeld(tab, x, y); break;
+
+				case ANIMAL:
+				    solucion->stack[s] = Place_GetCeld(tab, x, y); break;
+
+				case THING:
+				    solucion->stack[s] = Place_GetCeld(tab, x, y); break;
+
+				default: break;
+
+			    }
+		    }
+	}
+
+	return false;
+}
+
 int main()
 {
 	WALL = 0,
