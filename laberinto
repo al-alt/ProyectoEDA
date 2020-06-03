@@ -83,31 +83,27 @@ int Place_GetCeld(Place* this, int x, int y)
 	return this->map[x][y];
 }
 
-bool BT(Place* tab, Stack* solucion, int x, int y, int* acum, int* s_idx)
+
+bool is_free(Place* tab, int x, int y) 
 {
-	bool free = false;
-	// termina cuando encuentre una solución.
+	if (0 <= x && x < ROWS && 0 <= y && y < COLS && Place_GetCeld(tab, x, y) == ".") {return true; }
+	else { return false; }
+}
 
-	if (free == true) { return true };
-	// ya no revisa los candidatos restantes una vez que se obtuvo una
-	// solución
-
-	if (Place_GetCeld(tab, x, y) != 0) {
-
-		free = BT(tab, solucion, x + 1, y, acum, s_idx);
-		++*s_idx ;
-
-		if (not free) {
-			--* s_idx;
-		}
-		else {
-			free = BT(tab, solucion, x, y + 1, acum, s_idx);
-		}
-	}	
+bool BT(Place* tab, Stack* solucion, int x, int y)
+{
+	if (x == START && y == EXIT) {
+		return true;
+	}else{	
+		if (BT(tab, sol, x + 1, y) { return true; }
+		if (BT(tab, sol, x - 1, y) { return true; }
+		if (BT(tab, sol, x, y + 1) { return true; }
+		if (BT(tab, sol, x, y - 1) { return true; }
+		return false;
+	}		
 	else if (Place_GetCeld(tab, x, y) != 0 && Place_GetCeld(tab, x, y) != 1) {
 		int celd = Place_GetCeld(tab, x, y);
-		    for (int s = 0; s < 10; s++) {
-				switch (celd) {
+			switch (celd) {
 
 				case START:
 					Place_SetCeld(tab, x, y, START);  break;
@@ -122,16 +118,22 @@ bool BT(Place* tab, Stack* solucion, int x, int y, int* acum, int* s_idx)
 				case DELETE:
 					Place_SetCeld(tab, x, y, DELETE); break;
 				case PERSON:
-					solucion->stack[s] = Place_GetCeld(tab, x, y); break;
+					if( Stack_IsFull( solucion) == false ){
+				         Stack_Push(solucion, Place_GetCeld(tab, x, y) ); break;
+                                    };
 
 				case DEAD:
-				    solucion->stack[s] = Place_GetCeld(tab, x, y); break;
-
+				    if( Stack_IsFull( solucion) == false ){
+				       solucion->stack[s] = Place_GetCeld(tab, x, y); break;
+                                    }
 				case ANIMAL:
-				    solucion->stack[s] = Place_GetCeld(tab, x, y); break;
-
+				    if( Stack_IsFull( solucion) == false ){
+				         Stack_Push(solucion, Place_GetCeld(tab, x, y) ); break;
+                                    }
 				case THING:
-				    solucion->stack[s] = Place_GetCeld(tab, x, y); break;
+				    if( Stack_IsFull( solucion) == false ){
+				         Stack_Push(solucion, Place_GetCeld(tab, x, y) ); break;
+                                    }
 
 				default: break;
 
