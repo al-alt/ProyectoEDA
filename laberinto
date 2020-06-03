@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stlib.h>
-#include <assert.h>
-
-#define ROWS 9
-#define COLS 9
+#include "Lab.h"
 
 enum CELDAS {
 	WALL = 0,
@@ -11,61 +6,31 @@ enum CELDAS {
 	START,
 	EXIT,
 	VISITED,
-	ROMEVED,
+	DELETE,
 	PERSON,
 	DEAD,
 	ANIMAL,
 	THING
 };
 
-typedef struct Place_T{
-	int rows;
-	int colms;
-	int map[ROWS][COLS];
-};
-
-typedef struct Place_T Place;
-
-Place* Place_Ctor(int rows, int colms, int board[][COLS]) 
-{
-	Place* new = (Place*)malloc(sizeof(Place));
-	assert(new);
-
-	new->rows = rows;
-	new->colms = colms;
-	for (size_t i = 0; i < rows; i++) {
-		for (size_t j = 0; j < colms; j++) {
-			new->map[i][j] = board[i][j];
-		}
-	}
-	return new;
-}
-
-void Place_Dtor(Place* this) 
-{
-	assert( this );
-	free(this);
-	this == NULL;
-}
-
 void Create_Place(Place* this) 
 {
 	for (size_t i = 0; i < this->rows; i++) {
-		for (size_j = 0; j < this colms; j++) {
+		for (size_t j = 0; j < this->colms; j++) {
 			int celd = this->map[i][j];
-			swtich(celd) {
+			switch(celd) {
 
 				case WALL: printf("#"); break;
-				case FREE: printf("."); break;
-				case START: printf("s"); break;
-				case EXIT: printf("e"); break;
-				case VISITED: printf("v"); break;
-				case REMOVED: printf("r"); break;
-				case PERSON: printf("p"); break;
-				case DEAD: printf("d"); break;
-				case ANIMAL: printf("a"); break;
-				case THING: printf("t"); break;
-					default break;
+				case FREE: printf(" "); break;
+				case START: printf("S"); break;
+				case EXIT: printf("E"); break;
+				case VISITED: printf("*"); break;
+				case DELETE: printf("R"); break;
+				case PERSON: printf("P"); break;
+				case DEAD: printf("D"); break;
+				case ANIMAL: printf("A"); break;
+				case THING: printf("T"); break;
+				default: break;
 			}
 		}
 		printf("\n");
@@ -73,105 +38,148 @@ void Create_Place(Place* this)
 	printf("\n");
 }
 
-void Place_SetCeld(Place* this, int x, int y,  int type)
-{
-	this->map[x][y] = type;
-}
-
-int Place_GetCeld(Place* this, int x, int y) 
-{
-	return this->map[x][y];
-}
-
-
 bool is_free(Place* tab, int x, int y) 
 {
-	if (0 <= x && x < ROWS && 0 <= y && y < COLS && Place_GetCeld(tab, x, y) == ".") {return true; }
+	if (0 <= x && x < ROWS && 0 <= y && y < COLS && Place_GetCeld(tab, x, y) == " ") {return true; }
 	else { return false; }
 }
 
-bool BT(Place* tab, Stack* solucion, int x, int y)
+bool is_solution(Place* tab, Stack* solution, int x, int y )
 {
+	if (Place_GetCeld(tab, x, y) > 0 && Place_GetCeld(tab, x, y) != 1) { return true; }
+	else { return false; }
+}
+
+bool LabyrinthBT(Place* tab, Stack* solution, int x, int y)
+{
+
 	if (x == START && y == EXIT) {
 		return true;
-	}else{	
-		if (BT(tab, sol, x + 1, y) { return true; }
-		if (BT(tab, sol, x - 1, y) { return true; }
-		if (BT(tab, sol, x, y + 1) { return true; }
-		if (BT(tab, sol, x, y - 1) { return true; }
-		return false;
-	}		
-	else if (Place_GetCeld(tab, x, y) != 0 && Place_GetCeld(tab, x, y) != 1) {
-		int celd = Place_GetCeld(tab, x, y);
+	}
+	if( is_free(tab, x, y) ){
+		
+		if( LabyrinthBT(tab, solution, x + 1, y) == true ){ return true; }
+		if( LabyrinthBT(tab, solution, x - 1, y) == true ){ return true; }
+		if( LabyrinthBT(tab, solution, x, y + 1) == true ){ return true; }
+		if( LabyrinthBT(tab, solution, x, y - 1) == true ){ return true; }
+		tab->map[x][y] = " ";
+		if( is_solution(tab, solution, x, y) ){
+			int celd = Place_GetCeld(tab, x, y);
 			switch (celd) {
-
-				case START:
-					Place_SetCeld(tab, x, y, START);  break;
-
-				case EXIT:
-					free = true;
-					return free; break;
 
 				case VISITED:
 					 Place_SetCeld(tab, x, y, VISITED); break;
 
 				case DELETE:
-					Place_SetCeld(tab, x, y, DELETE); break;
+					 Place_SetCeld(tab, x, y, DELETE); break;
+
 				case PERSON:
-					if( Stack_IsFull( solucion) == false ){
-				         Stack_Push(solucion, Place_GetCeld(tab, x, y) ); break;
-                                    };
+					if( Stack_IsFull( solution) == false ){
+				         Stack_Push(solution, Place_GetCeld(tab, x, y) ); break;
+                    }
 
 				case DEAD:
-				    if( Stack_IsFull( solucion) == false ){
-				       solucion->stack[s] = Place_GetCeld(tab, x, y); break;
-                                    }
+				    if( Stack_IsFull( solution) == false ){
+				       Stack_Push(solution, Place_GetCeld(tab, x, y) ); break;
+                    }
 				case ANIMAL:
-				    if( Stack_IsFull( solucion) == false ){
-				         Stack_Push(solucion, Place_GetCeld(tab, x, y) ); break;
+				    if( Stack_IsFull( solution) == false ){
+				         Stack_Push(solution, Place_GetCeld(tab, x, y) ); break;
                                     }
 				case THING:
-				    if( Stack_IsFull( solucion) == false ){
-				         Stack_Push(solucion, Place_GetCeld(tab, x, y) ); break;
-                                    }
+				    if( Stack_IsFull( solution) == false ){
+				         Stack_Push(solution, Place_GetCeld(tab, x, y) ); break;
+                    }
 
 				default: break;
 
 			    }
-		    }
+		}
+		return false;
+	}	
+
+	return false;
+}
+
+bool Labyrinth( Place* tab, Stack* sol, int x, int y, int end_i, int end_j )
+{
+
+    bool solution = false;
+
+	if( x == end_i && y == end_j ){
+        *(*(tab->map + x) + y) = 1;
+		solution = true;
+
+		return solution; 
+	} 
+	else{
+		solution = LabyrinthBT(tab, sol, x, y);
+
+		return solution;
 	}
 
 	return false;
 }
 
+void PrintElem(Stack* sol, int _size)
+{
+	printf("Elementos encontrados\n");
+	for(int i = 0; i < _size; ++i){
+       printf("[%d]: %p\n", i, sol );
+	}
+}
+
+void PrintMap(Place* map, int size_rows, int size_cols, int x, int y)
+{
+	if(x < size_rows){
+		if( y < size_cols){
+			printf( "%d", Place_GetCeld(map, x, y) );
+			y++;
+			PrintMap(map, size_rows, size_cols, x, y);
+		}
+		else{
+			x++;
+			y = 0;
+			PrintMap(map, size_rows, size_cols, x, y);
+		}
+	}
+}
+
+#define START_X 0
+#define START_Y 0
+#define END_X 8
+#define END_Y 8
+
+
 int main()
 {
-	WALL = 0,
-		FREE,
-		START,
-		EXIT,
-		VISITED,
-		ROMEVED,
-		PERSON,
-		DEAD,
-		ANIMAL,
-		THING
-		int tab[ROWS][COLS] = {
-			{2,0,9,1,1,1,0,0,9},
-			{1,0,1,0,0,1,7,1,1},
-			{1,0,0,0,0,1,0,0,1},
-			{1,0,1,1,1,8,0,1,1},
-			{1,0,6,0,0,0,0,1,0},
-			{1,0,1,0,1,1,1,1,1},
-			{1,7,1,0,1,0,0,0,0},
-			{0,0,0,0,9,1,1,6,3}
+	int capacity = 10;
+	
+	int tab[ROWS][COLS] = {
+	{2,0,9,1,1,1,0,0,9},
+	{1,0,1,0,0,1,7,1,1},
+	{1,0,0,0,0,1,0,0,1},
+	{1,0,1,1,1,8,0,1,1},
+	{1,0,6,0,0,0,0,1,0},
+    {1,0,1,0,1,1,1,1,1},
+	{1,7,1,0,1,0,0,0,0},
+	{1,0,1,0,9,1,1,6,3}
 	};
 	
-	Place* Tab = Place_Ctor(ROW, COLS, tab);
-	Create_Place(Place Tab);
-	Place_SetCeld(Tab, 0, 0, START);
-	Place_SetCeld(Tab, 7, 8, EXIT);
-	Create_Place(Place Tab);
+	Place* Map = Place_Ctor (ROWS, COLS, tab);
+	Stack* Sol = Stack_New(capacity);
 
-	Place_Dtor(Tab);
+	bool res = Labyrinth( Map, Sol, START_X, START_Y, END_X, END_Y );
+	if( res == true ){
+		PrintMap( Map, ROWS, COLS, START_X, START_Y);
+		PrintElem( Sol, CAPACITY);
+	}
+	else{
+	    printf( "\nNo se encontró una solución\n" );
+	}
+
+	Place_Dtor ( Map );
+	Stack_Delete( Sol );
+	
+	return 0;
 }
